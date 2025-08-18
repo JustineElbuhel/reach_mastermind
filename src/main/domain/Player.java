@@ -42,6 +42,6 @@ public class Player {
     }
 
     public String getPlayerInfo(){
-        return this.name + "=> High Score: " + Collections.max(scores) + " Wins: " + wins + " Losses: " + loses;
+        return this.name + "=> Wins: " + wins + " Losses: " + loses;
     }
 }
