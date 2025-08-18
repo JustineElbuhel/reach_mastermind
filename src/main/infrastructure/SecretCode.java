@@ -1,4 +1,4 @@
-package main.domain;
+package main.infrastructure;
 
 import java.io.FileInputStream;
 import java.net.URI;

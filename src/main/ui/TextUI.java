@@ -1,11 +1,10 @@
 package main.ui;
 
-import java.sql.Array;
 import java.util.*;
 
 import main.domain.Player;
 
-import main.domain.SecretCode;
+import main.infrastructure.SecretCode;
 import main.logic.Mastermind;
 
 public class TextUI {
