@@ -37,10 +37,6 @@ public class Player {
         return "Total Wins: " + wins + ", Total Loses: " + loses;
     }
 
-    public int getHighScore(){
-        return Collections.max(scores);
-    }
-
     public String getPlayerInfo(){
         return this.name + "=> Wins: " + wins + " Losses: " + loses;
     }

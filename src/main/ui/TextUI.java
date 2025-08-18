@@ -4,6 +4,7 @@ import java.sql.Array;
 import java.util.*;
 
 import main.domain.Player;
+
 import main.domain.SecretCode;
 import main.logic.Mastermind;
 
@@ -32,7 +33,7 @@ public class TextUI {
             System.out.println();
             System.out.println("Main Menu");
             System.out.println("[1] Single Player");
-            System.out.println("[2] Multiplayer");
+            System.out.println("[2] Multiplayer Versus");
             System.out.println("[x] Close game");
             System.out.print("> ");
             String gameModeSelection = scanner.nextLine();
@@ -59,7 +60,29 @@ public class TextUI {
                 }
 
             } else if (gameModeSelection.equals("2")){
-                multiplayerMode();
+                System.out.println("Multiplayer Versus");
+
+                System.out.print("Enter first player's name: ");
+                String playerOneName = scanner.nextLine();
+                System.out.print("Enter second player's name: ");
+                String playerTwoName = scanner.nextLine();
+                Player player1 = new Player(playerOneName);
+                Player player2 = new Player(playerTwoName);
+                allPlayers.add(player1);
+                allPlayers.add(player2);
+
+                while (true) {
+                    multiplayerMode(player1, player2);
+
+                    System.out.println();
+                    System.out.println("Play again?");
+                    System.out.println("[Y] Yes");
+                    System.out.println("[N] No");
+                    String samePlayersResponse = scanner.nextLine();
+                    if (samePlayersResponse.equalsIgnoreCase("N")) {
+                        break;
+                    }
+                }
             } else if (gameModeSelection.equalsIgnoreCase("x")){
                 System.out.println();
                 System.out.println("Game closing. Thank you for playing.");
@@ -78,19 +101,10 @@ public class TextUI {
 
         int roundN = 1;
 
-        Map.Entry<String, Integer> difficultyResult = selectDifficulty();
-        String difficulty =  difficultyResult.getKey();
-        int codeLength = difficultyResult.getValue();
+        int codeLength = selectDifficulty();
 
         String secretCode = new SecretCode(codeLength).generateSecretCode();
         System.out.println(secretCode);     //? SECRET CODE
-
-        System.out.println(lineBreak);
-        System.out.println("Difficulty: " + difficulty);
-        System.out.println("You have 10 chances to guess the " + codeLength + " digit code.");
-        System.out.println("Good luck");
-        System.out.println(lineBreak);
-        System.out.println();
 
         while (roundN <= 10) {
             System.out.println("Round " + roundN);
@@ -118,11 +132,60 @@ public class TextUI {
         }
     }
 
-    private void multiplayerMode(){
+    private void multiplayerMode(Player player1, Player player2) throws Exception {
+        int roundN = 1;
 
+        int codeLength = selectDifficulty();
+
+        String secretCode = new SecretCode(codeLength).generateSecretCode();
+        System.out.println(secretCode);     //? SECRET CODE
+
+
+        while (roundN <= 10) {
+            System.out.println("Round " + roundN);
+            System.out.print(player1.getName() + " enter guess: ");
+            String user1Guess = scanner.nextLine();
+
+            if (secretCode.equals(user1Guess)) {
+                player1.addWin();
+                player2.addLoss();
+
+                System.out.println(lineBreak);
+                System.out.println("Congrats! " + player1.getName() +" guessed the secret code!");
+                System.out.println(lineBreak);
+                break;
+            } else {
+                mastermind.checkPieces(secretCode, user1Guess, codeLength);
+            }
+
+            System.out.print(player2.getName() + " enter guess: ");
+            String user2Guess = scanner.nextLine();
+
+            if (secretCode.equals(user2Guess)) {
+                player2.addWin();
+                player1.addLoss();
+
+                System.out.println(lineBreak);
+                System.out.println("Congrats! " + player2.getName() + " guessed the secret code!");
+                System.out.println(lineBreak);
+                break;
+            } else {
+                mastermind.checkPieces(secretCode, user1Guess, codeLength);
+            }
+
+            roundN++;
+            System.out.println();
+        }
+
+        if (roundN > 10) {
+            player1.addLoss();
+            System.out.println(lineBreak);
+            System.out.println("Sorry, you ran out of guesses. The secret code was " + secretCode);
+            System.out.println(lineBreak);
+        }
     }
 
-    private AbstractMap.SimpleEntry<String, Integer> selectDifficulty(){
+    private int selectDifficulty(){
         String difficulty = "";
         int codeLength = 4;
 
@@ -146,6 +209,12 @@ public class TextUI {
             codeLength = 6;
         }
 
-        return new AbstractMap.SimpleEntry<>(difficulty, codeLength);
+        System.out.println(lineBreak);
+        System.out.println("Difficulty: " + difficulty);
+        System.out.println("You have 10 chances to guess the " + codeLength + " digit code.");
+        System.out.println("Good luck");
+        System.out.println(lineBreak);
+        System.out.println();
+        return codeLength;
     }
 }
