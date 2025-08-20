@@ -5,21 +5,28 @@ import java.util.*;
 import main.domain.Player;
 
 import main.infrastructure.SecretCode;
-import main.logic.Mastermind;
+import main.logic.CheckPieces;
+import main.logic.UserInputValidation;
 
 public class TextUI {
 
     private Scanner scanner;
-    private Mastermind mastermind;
+    private CheckPieces checkPieces;
+    private UserInputValidation userInputValidation;
     private List<Player> allPlayers;
     private static final String lineBreak = "*************************************";
 
     public TextUI(Scanner scanner){
         this.scanner = scanner;
-        this.mastermind = new Mastermind();
+        this.checkPieces = new CheckPieces();
+        this.userInputValidation = new UserInputValidation();
         this.allPlayers = new ArrayList<>();
     }
 
+    /**
+     * @class start - Executes the text ui, and calls upon the right methods based on user selection (difficulty,
+     * game mode)
+     */
     public void start() throws Exception {
 
         System.out.println("Welcome to my Mastermind");
@@ -96,6 +103,9 @@ public class TextUI {
         }
     }
 
+    /**
+     * Single Player
+     */
     private void singlePlayerMode(Player player) throws Exception {
 
         int roundN = 1;
@@ -110,14 +120,16 @@ public class TextUI {
             System.out.print("Enter guess: ");
             String userGuess = scanner.nextLine();
 
-            if (secretCode.equals(userGuess)) {
+            String validatedGuess = userInputValidation.checkUserGuessInput(userGuess, codeLength);
+
+            if (secretCode.equals(validatedGuess)) {
                 player.addWin();
                 System.out.println(lineBreak);
                 System.out.println("Congrats! You guessed the secret code!");
                 System.out.println(lineBreak);
                 break;
             } else {
-                mastermind.checkPieces(secretCode, userGuess, codeLength);
+                checkPieces.checkPieces(secretCode, validatedGuess, codeLength);
             }
             roundN++;
             System.out.println();
@@ -131,6 +143,9 @@ public class TextUI {
         }
     }
 
+    /**
+     * Multiplayer
+     */
     private void multiplayerMode(Player player1, Player player2) throws Exception {
         int roundN = 1;
 
@@ -139,13 +154,14 @@ public class TextUI {
         String secretCode = new SecretCode(codeLength).generateSecretCode();
         System.out.println(secretCode);     //? SECRET CODE
 
-
         while (roundN <= 10) {
             System.out.println("Round " + roundN);
             System.out.print(player1.getName() + " enter guess: ");
             String user1Guess = scanner.nextLine();
 
-            if (secretCode.equals(user1Guess)) {
+            String validUser1Guess = userInputValidation.checkUserGuessInput(user1Guess, codeLength);
+
+            if (secretCode.equals(validUser1Guess)) {
                 player1.addWin();
                 player2.addLoss();
 
@@ -154,13 +170,15 @@ public class TextUI {
                 System.out.println(lineBreak);
                 break;
             } else {
-                mastermind.checkPieces(secretCode, user1Guess, codeLength);
+                checkPieces.checkPieces(secretCode, validUser1Guess, codeLength);
             }
 
             System.out.print(player2.getName() + " enter guess: ");
             String user2Guess = scanner.nextLine();
 
-            if (secretCode.equals(user2Guess)) {
+            String validUser2Guess = userInputValidation.checkUserGuessInput(user2Guess, codeLength);
+
+            if (secretCode.equals(validUser2Guess)) {
                 player2.addWin();
                 player1.addLoss();
 
@@ -169,7 +187,7 @@ public class TextUI {
                 System.out.println(lineBreak);
                 break;
             } else {
-                mastermind.checkPieces(secretCode, user1Guess, codeLength);
+                checkPieces.checkPieces(secretCode, validUser2Guess, codeLength);
             }
 
             roundN++;
@@ -184,6 +202,10 @@ public class TextUI {
         }
     }
 
+    /**
+     * Sets game difficulty based on user selection
+     * @return
+     */
     private int selectDifficulty(){
         String difficulty = "";
         int codeLength = 4;
