@@ -2,7 +2,7 @@ package main.logic;
 
 import java.util.ArrayList;
 
-public class Mastermind {
+public class CheckPieces{
 
     public void checkPieces(String secretCode, String userGuess, int codeLength){
         int correctN = 0;
