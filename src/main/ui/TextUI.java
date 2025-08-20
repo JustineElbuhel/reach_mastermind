@@ -113,7 +113,6 @@ public class TextUI {
         int codeLength = selectDifficulty();
 
         String secretCode = new SecretCode(codeLength).generateSecretCode();
-        System.out.println(secretCode);     //? SECRET CODE
 
         while (roundN <= 10) {
             System.out.println("Round " + roundN);
@@ -152,7 +151,6 @@ public class TextUI {
         int codeLength = selectDifficulty();
 
         String secretCode = new SecretCode(codeLength).generateSecretCode();
-        System.out.println(secretCode);     //? SECRET CODE
 
         while (roundN <= 10) {
             System.out.println("Round " + roundN);
